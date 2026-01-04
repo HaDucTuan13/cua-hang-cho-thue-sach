@@ -31,7 +31,7 @@ const sendMailForgotPassword = async (recipientEmail, otp) => {
         });
 
         const mailOptions = {
-            from: `"PCM Books" <${USER_EMAIL}>`,
+            from: `"HĐT" <${USER_EMAIL}>`,
             to: recipientEmail,
             subject: 'Yêu cầu đặt lại mật khẩu',
             text: `Bạn đã yêu cầu đặt lại mật khẩu. Mã OTP của bạn là: ${otp}. Vui lòng làm theo hướng dẫn trong email.`,

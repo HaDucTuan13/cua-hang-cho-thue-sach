@@ -74,7 +74,7 @@ function Header() {
                     <Link to="/">
                         <div className="flex-shrink-0 cursor-pointer">
                             <img
-                                src="https://doanwebsite.com/assets/logo-UOwfYMBw.webp"
+                                src="/logo.png"
                                 alt="logo"
                                 className="h-12 w-auto hover:scale-105 transition-transform duration-200"
                             />
