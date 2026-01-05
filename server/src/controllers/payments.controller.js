@@ -33,6 +33,23 @@ class PaymentsController {
                 status: 'pending',
                 paymentMethod: 'cod',
             });
+
+            // Trừ stock cho từng sản phẩm trong giỏ
+            for (const item of cart.product) {
+                const product = await modelProduct.findById(item.productId);
+                if (!product) {
+                    throw new BadRequestError('Sản phẩm không tồn tại');
+                }
+                if (product.stock < item.quantity) {
+                    throw new BadRequestError('Số lượng sản phẩm không đủ');
+                }
+
+                // Nếu đủ hàng thì trừ stock
+                await modelProduct.findByIdAndUpdate(item.productId, {
+                    $inc: { stock: -item.quantity },
+                });
+            }
+
             await modelCart.deleteOne({ userId: id });
             return new Created({
                 message: 'Tạo đơn hàng thành công',
@@ -40,18 +57,16 @@ class PaymentsController {
             }).send(res);
         } else if (typePayment === 'momo') {
             var partnerCode = 'MOMO';
-
             var accessKey = 'F8BBA842ECF85';
             var secretkey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
             var requestId = partnerCode + new Date().getTime();
             var orderId = requestId;
-            var orderInfo = `thanh toan ${cart._id}`; // nội dung giao dịch thanh toán
-            var redirectUrl = 'http://localhost:3000/api/payments/check-payment-momo'; // 8080
+            var orderInfo = `thanh toan ${cart._id}`;
+            var redirectUrl = 'http://localhost:3000/api/payments/check-payment-momo';
             var ipnUrl = 'http://localhost:3000/api/payments/check-payment-momo';
-            // var ipnUrl = redirectUrl = "https://webhook.site/454e7b77-f177-4ece-8236-ddf1c26ba7f8";
             var amount = cart.totalPrice;
             var requestType = 'captureWallet';
-            var extraData = ''; //pass empty value if your merchant does not have stores
+            var extraData = '';
 
             var rawSignature =
                 'accessKey=' +
@@ -74,61 +89,117 @@ class PaymentsController {
                 requestId +
                 '&requestType=' +
                 requestType;
-            //puts raw signature
 
-            //signature
             var signature = crypto.createHmac('sha256', secretkey).update(rawSignature).digest('hex');
 
-            //json object send to MoMo endpoint
             const requestBody = JSON.stringify({
-                partnerCode: partnerCode,
-                accessKey: accessKey,
-                requestId: requestId,
-                amount: amount,
-                orderId: orderId,
-                orderInfo: orderInfo,
-                redirectUrl: redirectUrl,
-                ipnUrl: ipnUrl,
-                extraData: extraData,
-                requestType: requestType,
-                signature: signature,
+                partnerCode,
+                accessKey,
+                requestId,
+                amount,
+                orderId,
+                orderInfo,
+                redirectUrl,
+                ipnUrl,
+                extraData,
+                requestType,
+                signature,
                 lang: 'en',
             });
 
             const response = await axios.post('https://test-payment.momo.vn/v2/gateway/api/create', requestBody, {
-                headers: {
-                    'Content-Type': 'application/json',
-                },
+                headers: { 'Content-Type': 'application/json' },
             });
-            return new Created({ message: 'Thanh toán thành công', metadata: response.data.payUrl }).send(res);
+
+            //  Tạo đơn hàng trong DB
+            const payments = await modelPayments.create({
+                userId: id,
+                fullName: cart.fullName,
+                phone: cart.phone,
+                address: cart.address,
+                product: cart.product,
+                totalPrice: cart.totalPrice,
+                status: 'pending',
+                paymentMethod: 'momo',
+            });
+
+            //  Trừ stock cho từng sản phẩm
+            for (const item of cart.product) {
+                const product = await modelProduct.findById(item.productId);
+                if (!product) {
+                    throw new BadRequestError('Sản phẩm không tồn tại');
+                }
+                if (product.stock < item.quantity) {
+                    throw new BadRequestError('Số lượng sản phẩm không đủ');
+                }
+                await modelProduct.findByIdAndUpdate(item.productId, {
+                    $inc: { stock: -item.quantity },
+                });
+            }
+
+            //  Xóa giỏ hàng
+            await modelCart.deleteOne({ userId: id });
+
+            return new Created({
+                message: 'Thanh toán thành công',
+                metadata: response.data.payUrl,
+            }).send(res);
         } else if (typePayment === 'vnpay') {
             const vnpay = await new VNPay({
-                // Thông tin cấu hình bắt buộc
                 tmnCode: 'GS1I559X',
                 secureSecret: 'WWS2Y89FTXLSQKVH54CERAMWNAJMNUB5',
                 vnpayHost: 'https://sandbox.vnpayment.vn/merchantv2',
-                // Cấu hình tùy chọn
-                testMode: true, // Chế độ test
-                hashAlgorithm: 'SHA512', // Thuật toán mã hóa
-                enableLog: true, // Bật/tắt ghi log
-                loggerFn: ignoreLogger, // Hàm xử lý log tùy chỉnh
+                testMode: true,
+                hashAlgorithm: 'SHA512',
+                enableLog: true,
+                loggerFn: ignoreLogger,
             });
 
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
+
             const resVnpay = vnpay.buildPaymentUrl({
-                vnp_Amount: cart.totalPrice, //
-                vnp_IpAddr: '127.0.0.1', //
-                vnp_TxnRef: cart._id, //
-                vnp_OrderInfo: cart._id, //
+                vnp_Amount: cart.totalPrice,
+                vnp_IpAddr: '127.0.0.1',
+                vnp_TxnRef: cart._id,
+                vnp_OrderInfo: cart._id,
                 vnp_OrderType: ProductCode.Other,
-                vnp_ReturnUrl: `http://localhost:3000/api/payments/check-payment-vnpay`, //
-                vnp_Locale: VnpLocale.VN, // 'vn' hoặc 'en'
-                vnp_CreateDate: dateFormat(new Date()), // tùy chọn, mặc định là hiện tại
-                vnp_ExpireDate: dateFormat(tomorrow), // tùy chọn
+                vnp_ReturnUrl: `http://localhost:3000/api/payments/check-payment-vnpay`,
+                vnp_Locale: VnpLocale.VN,
+                vnp_CreateDate: dateFormat(new Date()),
+                vnp_ExpireDate: dateFormat(tomorrow),
             });
 
-            new Created({
+            // 🔽 Tạo đơn hàng trong DB
+            const payments = await modelPayments.create({
+                userId: id,
+                fullName: cart.fullName,
+                phone: cart.phone,
+                address: cart.address,
+                product: cart.product,
+                totalPrice: cart.totalPrice,
+                status: 'pending',
+                paymentMethod: 'vnpay',
+            });
+
+            // 🔽 Trừ stock cho từng sản phẩm
+            for (const item of cart.product) {
+                const product = await modelProduct.findById(item.productId);
+                if (!product) {
+                    throw new BadRequestError('Sản phẩm không tồn tại');
+                }
+                if (product.stock < item.quantity) {
+                    throw new BadRequestError('Số lượng sản phẩm không đủ');
+                }
+                await modelProduct.findByIdAndUpdate(item.productId, {
+                    $inc: { stock: -item.quantity },
+                });
+            }
+
+            // 🔽 Xóa giỏ hàng
+            await modelCart.deleteOne({ userId: id });
+
+            return new Created({
                 message: 'Tạo đơn hàng thành công',
                 statusCode: 201,
                 metadata: resVnpay,
