@@ -5,7 +5,7 @@ function Cardbody({ product }) {
     return (
         <div className="w-full max-w-sm bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100 group">
             {/* Image Container */}
-            <div className="relative overflow-hidden">
+            <div className="relative h-64 overflow-hidden">
                 <img
                     src={product.images[0]}
                     alt={product.nameProduct}
