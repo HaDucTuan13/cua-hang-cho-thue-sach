@@ -2,6 +2,15 @@ import React from 'react';
 import { Users, BookOpen } from 'lucide-react';
 
 function Cardbody({ product }) {
+    // Tính giá sau giảm
+    const discountedPrice = product ? product.price - (product.price * product.discountProduct) / 100 : 0;
+    // Format price to VND
+    const formatPrice = (price) => {
+        return new Intl.NumberFormat('vi-VN', {
+            style: 'currency',
+            currency: 'VND',
+        }).format(price);
+    };
     return (
         <div className="w-full max-w-sm bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer border border-gray-100 group">
             {/* Image Container */}
@@ -32,11 +41,17 @@ function Cardbody({ product }) {
                 </h1>
 
                 {/* Price */}
-                <div className="flex items-center justify-between pt-2 border-t border-gray-100">
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-bold text-red-500">{product.price.toLocaleString()}đ</span>
-                        <span className="text-sm text-gray-500">/ ngày</span>
-                    </div>
+                <div className="space-y-1">
+                    {product.discountProduct > 0 ? (
+                        <>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xl font-bold text-red-600">{formatPrice(discountedPrice)}</span>
+                                <span className="text-sm text-gray-400 line-through">{formatPrice(product.price)}</span>
+                            </div>
+                        </>
+                    ) : (
+                        <span className="text-xl font-bold text-gray-800">{formatPrice(product.price)}</span>
+                    )}
                 </div>
             </div>
         </div>

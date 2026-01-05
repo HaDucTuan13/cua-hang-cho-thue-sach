@@ -147,11 +147,11 @@ function DetailProduct() {
                             {product?.nameProduct}
                         </h1>
 
-                        <div className="flex items-baseline gap-3 mb-6">
+                        {/* <div className="flex items-baseline gap-3 mb-6">
                             <span className="text-2xl lg:text-3xl font-extrabold text-red-500">
                                 {product?.price.toLocaleString()}₫
                             </span>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Thông tin chi tiết */}
@@ -191,12 +191,33 @@ function DetailProduct() {
 
                 {/* Mua hàng */}
                 <div className="lg:w-1/4 bg-white rounded-xl shadow-lg p-6 lg:p-8 flex flex-col gap-6 h-fit border border-blue-100 sticky top-24">
-                    <div className="flex items-end">
-                        <div className="text-2xl lg:text-3xl font-extrabold text-red-500 mb-2">
-                            {product?.price.toLocaleString()}₫
-                        </div>
+                    {/* Giá sản phẩm với logic giảm giá */}{' '}
+                    <div className="flex flex-col gap-2">
+                        {product?.discountProduct > 0 ? (
+                            <>
+                                <div className="flex items-center gap-3">
+                                    <div className="text-2xl lg:text-3xl font-extrabold text-red-500">
+                                        {(
+                                            product.price -
+                                            (product.price * product.discountProduct) / 100
+                                        ).toLocaleString()}
+                                        ₫
+                                    </div>
+                                    <div className="text-lg text-gray-400 line-through">
+                                        {product.price.toLocaleString()}₫
+                                    </div>
+                                </div>
+                                <div className="text-sm text-green-600 font-semibold">
+                                    Giảm {product.discountProduct}% – Tiết kiệm
+                                    {((product.price * product.discountProduct) / 100).toLocaleString()}₫{' '}
+                                </div>
+                            </>
+                        ) : (
+                            <div className="text-2xl lg:text-3xl font-extrabold text-red-500">
+                                {product?.price.toLocaleString()}₫
+                            </div>
+                        )}
                     </div>
-
                     <div className="flex items-center justify-between">
                         <span className="text-gray-600 font-medium">Số lượng</span>
                         <InputNumber
@@ -208,7 +229,6 @@ function DetailProduct() {
                             size="large"
                         />
                     </div>
-
                     {/* Thêm phần chọn ngày thuê */}
                     <div className="space-y-3 pt-3 border-t border-gray-100">
                         <h4 className="font-medium text-gray-700 mb-2 flex items-center">
@@ -248,7 +268,6 @@ function DetailProduct() {
                             )}
                         </div>
                     </div>
-
                     <div className="space-y-3">
                         <Button
                             icon={<ShoppingCartOutlined />}
@@ -261,7 +280,6 @@ function DetailProduct() {
                             Thêm vào giỏ
                         </Button>
                     </div>
-
                     {/* Thông tin bổ sung */}
                     <div className="pt-4 border-t border-gray-200">
                         <div className="space-y-2 text-sm text-gray-600">

@@ -79,6 +79,7 @@ function ManagerProduct() {
             publisher: record.publisher,
             publishingHouse: record.publishingHouse,
             coverType: record.coverType,
+            discountProduct: record.discountProduct,
             id: record.id,
         });
 
@@ -208,6 +209,12 @@ function ManagerProduct() {
             dataIndex: 'price',
             key: 'price',
             render: (price) => `${price.toLocaleString('vi-VN')} VNĐ`,
+        },
+        {
+            title: 'Giảm giá',
+            dataIndex: 'discountProduct',
+            key: 'discountProduct',
+            render: (discount) => (discount && discount > 0 ? `${discount}%` : 'Không giảm'),
         },
 
         {
@@ -364,6 +371,20 @@ function ManagerProduct() {
                                 <Select.Option value="hardcover">Bìa cứng</Select.Option>
                             </Select>
                         </Form.Item>
+
+                        <Form.Item
+                            name="discountProduct"
+                            label="Giảm giá (%)"
+                            rules={[{ required: false }]} // không bắt buộc
+                        >
+                            <InputNumber
+                                style={{ width: '100%' }}
+                                min={0}
+                                max={100}
+                                formatter={(value) => `${value}%`}
+                                parser={(value) => value.replace('%', '')}
+                            />
+                        </Form.Item>
                     </div>
 
                     <Form.Item
@@ -374,12 +395,12 @@ function ManagerProduct() {
                         <Editor
                             apiKey="hfm046cu8943idr5fja0r5l2vzk9l8vkj5cp3hx2ka26l84x"
                             init={{
+                                placeholder: 'Mô tả chi tiết sản phẩm',
                                 plugins:
                                     'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
                                 toolbar:
                                     'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
                             }}
-                            initialValue="Mô tả chi tiết sản phẩm"
                             onEditorChange={(content, editor) => {
                                 setEditorContent(content);
                                 form.setFieldsValue({ description: content });

@@ -25,8 +25,18 @@ const fs = require('fs/promises');
 
 class ProductsController {
     async createProduct(req, res) {
-        const { nameProduct, images, price, description, category, stock, publisher, publishingHouse, coverType } =
-            req.body;
+        const {
+            nameProduct,
+            images,
+            price,
+            description,
+            category,
+            stock,
+            publisher,
+            publishingHouse,
+            coverType,
+            discountProduct,
+        } = req.body;
         if (
             !nameProduct ||
             !price ||
@@ -50,6 +60,7 @@ class ProductsController {
             publisher,
             publishingHouse,
             coverType,
+            discountProduct,
         });
         return new Created({
             message: 'Tạo sản phẩm thành công',
@@ -104,8 +115,19 @@ class ProductsController {
     }
 
     async updateProduct(req, res) {
-        const { id, nameProduct, images, price, description, category, stock, publisher, publishingHouse, coverType } =
-            req.body;
+        const {
+            id,
+            nameProduct,
+            images,
+            price,
+            description,
+            category,
+            stock,
+            publisher,
+            publishingHouse,
+            coverType,
+            discountProduct,
+        } = req.body;
         const product = await modelProduct.findByIdAndUpdate(id, {
             nameProduct,
             price,
@@ -116,6 +138,7 @@ class ProductsController {
             publishingHouse,
             images,
             coverType,
+            discountProduct,
         });
         return new OK({
             message: 'Cập nhật sản phẩm thành công',

@@ -10,7 +10,7 @@ const productsSchema = new Schema(
         images: { type: Array, require: true }, // ảnh
         category: { type: String, require: true }, // thể loại
         stock: { type: Number, require: true }, // số lượng sản phẩm
-        //discountProduct: { type: Number }, // giam gia
+        discountProduct: { type: Number, default: 0 }, // giam gia
 
         publisher: { type: String, require: true }, // công ty phát hành
         publishingHouse: { type: String, require: true }, // nhà xuất bản

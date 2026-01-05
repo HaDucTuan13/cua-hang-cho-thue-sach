@@ -115,9 +115,29 @@ function CartUser() {
                                                 {/* Giá */}
                                                 <Col flex="120px">
                                                     <div className="text-right">
-                                                        <div className="text-lg font-bold text-red-500">
-                                                            {item.product.price.toLocaleString()}₫
-                                                        </div>
+                                                        {item.product.discountProduct > 0 ? (
+                                                            <div className="flex flex-col items-end gap-1">
+                                                                <div className="text-lg font-bold text-red-500">
+                                                                    {(
+                                                                        item.product.price -
+                                                                        (item.product.price *
+                                                                            item.product.discountProduct) /
+                                                                            100
+                                                                    ).toLocaleString()}
+                                                                    ₫
+                                                                </div>
+                                                                <div className="text-sm text-gray-400 line-through">
+                                                                    {item.product.price.toLocaleString()}₫
+                                                                </div>
+                                                                <div className="text-xs text-green-600 font-semibold">
+                                                                    -{item.product.discountProduct}%
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="text-lg font-bold text-red-500">
+                                                                {item.product.price.toLocaleString()}₫
+                                                            </div>
+                                                        )}
                                                     </div>
                                                 </Col>
 
@@ -143,7 +163,14 @@ function CartUser() {
                                                 {/* Thành tiền */}
                                                 <Col flex="120px">
                                                     <div className="text-right font-bold text-lg text-red-500">
-                                                        {(item.product.price * item.quantity).toLocaleString()}₫
+                                                        {(
+                                                            (item.product.discountProduct > 0
+                                                                ? item.product.price -
+                                                                  (item.product.price * item.product.discountProduct) /
+                                                                      100
+                                                                : item.product.price) * item.quantity
+                                                        ).toLocaleString()}
+                                                        ₫
                                                     </div>
                                                 </Col>
 
@@ -181,7 +208,16 @@ function CartUser() {
                                     <div className="flex justify-between items-center">
                                         <span className="text-gray-600">Tạm tính ({dataCart?.length} sản phẩm)</span>
                                         <span className="font-semibold">
-                                            {dataCart?.reduce((sum, item) => sum + item.totalPrice, 0).toLocaleString()}
+                                            {dataCart
+                                                ?.reduce((sum, item) => {
+                                                    const finalPrice =
+                                                        item.product.discountProduct > 0
+                                                            ? item.product.price -
+                                                              (item.product.price * item.product.discountProduct) / 100
+                                                            : item.product.price;
+                                                    return sum + finalPrice * item.quantity;
+                                                }, 0)
+                                                .toLocaleString()}
                                             ₫
                                         </span>
                                     </div>
@@ -194,6 +230,19 @@ function CartUser() {
                                 <Divider className="my-4" />
                                 <div className="flex justify-between items-center mb-6">
                                     <span className="text-lg font-bold">Tổng thanh toán</span>
+                                    <span className="text-xl font-extrabold text-red-600">
+                                        {dataCart
+                                            ?.reduce((sum, item) => {
+                                                const finalPrice =
+                                                    item.product.discountProduct > 0
+                                                        ? item.product.price -
+                                                          (item.product.price * item.product.discountProduct) / 100
+                                                        : item.product.price;
+                                                return sum + finalPrice * item.quantity;
+                                            }, 0)
+                                            .toLocaleString()}
+                                        ₫
+                                    </span>
                                 </div>
                                 <Link to="/checkout">
                                     <Button
