@@ -20,21 +20,21 @@ function Footer() {
                         <li>Chính sách đổi trả</li>
                         <li>Hướng dẫn trả góp</li>
                         <li>Chính sách nhập khẩu</li>
-                        <li>Hỗ trợ khách hàng: hotro@hdt.vn</li>
-                        <li>Báo lỗi bảo mật: security@hdt.vn</li>
+                        <li>Hỗ trợ khách hàng: hotro@abc.vn</li>
+                        <li>Báo lỗi bảo mật: security@abc.vn</li>
                     </ul>
                 </div>
                 {/* Về Tiki */}
                 <div>
-                    <h3 className="font-semibold mb-2">Về HĐT</h3>
+                    <h3 className="font-semibold mb-2">Về ABCBooks</h3>
                     <ul className="space-y-1">
-                        <li>Giới thiệu HĐT</li>
-                        <li>HĐT Blog</li>
+                        <li>Giới thiệu ABC</li>
+                        <li>ABC Blog</li>
                         <li>Chính sách bảo mật thanh toán</li>
                         <li>Chính sách bảo mật thông tin cá nhân</li>
                         <li>Chính sách giải quyết khiếu nại</li>
                         <li>Điều khoản sử dụng</li>
-                        <li>Tiếp thị liên kết cùng HĐT</li>
+                        <li>Tiếp thị liên kết cùng ABC</li>
                         <li>Bán hàng doanh nghiệp</li>
                         <li>Điều kiện vận chuyển</li>
                     </ul>
@@ -44,7 +44,7 @@ function Footer() {
                     <h3 className="font-semibold mb-2">Hợp tác và liên kết</h3>
                     <ul className="space-y-1">
                         <li>Quy chế hoạt động Sàn GDTMĐT</li>
-                        <li>Bán hàng cùng HĐT</li>
+                        <li>Bán hàng cùng ABC</li>
                     </ul>
                     <h3 className="font-semibold mt-4 mb-2">Chứng nhận bởi</h3>
                     <div className="flex space-x-2 items-center">

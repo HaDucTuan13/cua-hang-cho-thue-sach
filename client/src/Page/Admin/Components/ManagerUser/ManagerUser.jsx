@@ -77,8 +77,8 @@ function ManagerUser() {
             key: 'role',
             render: (role) => (role === 'admin' ? 'Quản trị viên' : 'Người dùng'),
             filters: [
-                { text: 'Quản trị viên', value: '1' },
-                { text: 'Người dùng', value: '0' },
+                { text: 'Quản trị viên', value: 'admin' },
+                { text: 'Người dùng', value: 'user' },
             ],
             onFilter: (value, record) => record.role === value,
         },
@@ -102,7 +102,7 @@ function ManagerUser() {
 
     return (
         <div className={cx('wrapper')}>
-            <h2 className={cx('title')}>Quản lý người dùng</h2>
+            <h2 className={cx('title')}>Quản lý tài khoản</h2>
             <Table
                 columns={columns}
                 dataSource={users}
@@ -144,8 +144,8 @@ function ManagerUser() {
                         rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
                     >
                         <Select>
-                            <Select.Option value="0">Người dùng</Select.Option>
-                            <Select.Option value="1">Quản trị viên</Select.Option>
+                            <Select.Option value="user">Người dùng</Select.Option>
+                            <Select.Option value="admin">Quản trị viên</Select.Option>
                         </Select>
                     </Form.Item>
                 </Form>

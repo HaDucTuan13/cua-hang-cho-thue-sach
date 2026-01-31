@@ -85,20 +85,19 @@ function HomePage() {
         setFilteredProducts(category.metadata.products);
     };
 
-    useEffect(() => {
-        if (selectedCategory) {
-            fetchCategoryById(selectedCategory);
-        }
-    }, [selectedCategory]);
-
     // Lọc sản phẩm theo giá và sắp xếp
     useEffect(() => {
         let result = [...products];
 
-        // Lọc theo khoảng giá
-        result = result.filter((product) => product.price >= priceFilter.min && product.price <= priceFilter.max);
+        // ✅ Lọc theo danh mục
+        if (selectedCategory) {
+            result = result.filter((p) => p.category === selectedCategory);
+        }
 
-        // Sắp xếp theo option đã chọn
+        // ✅ Lọc giá
+        result = result.filter((p) => p.price >= priceFilter.min && p.price <= priceFilter.max);
+
+        // ✅ Sort
         if (sortOrder === 'price-asc') {
             result.sort((a, b) => a.price - b.price);
         } else if (sortOrder === 'price-desc') {
@@ -110,7 +109,7 @@ function HomePage() {
         }
 
         setFilteredProducts(result);
-    }, [products, priceFilter, sortOrder]);
+    }, [products, selectedCategory, priceFilter, sortOrder]);
 
     // Xử lý khi thay đổi bộ lọc giá
     const handlePriceFilterChange = (type, value) => {

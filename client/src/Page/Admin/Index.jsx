@@ -66,7 +66,7 @@ function Admin() {
         {
             key: 'users',
             icon: <UserOutlined />,
-            label: 'Quản lý người dùng',
+            label: 'Quản lý tài khoản',
         },
     ];
 

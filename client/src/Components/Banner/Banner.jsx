@@ -1,5 +1,8 @@
 import Slider from 'react-slick';
 import { LeftOutlined, RightOutlined } from '@ant-design/icons';
+import banner1 from '../../assets/images/banner_img1.jpg';
+import banner2 from '../../assets/images/banner_img2.jpg';
+import banner3 from '../../assets/images/banner_img3.jpg';
 
 // Custom Arrow Components
 const CustomPrevArrow = ({ onClick }) => (
@@ -47,19 +50,21 @@ function Banner() {
     const images = [
         {
             id: 1,
-            url: 'https://theme.hstatic.net/1000237375/1000756917/14/slider_item_1_image.jpg?v=1840',
+            url: banner1,
             title: 'Bộ sưu tập mới',
             subtitle: 'Khám phá xu hướng thời trang 2024',
         },
         {
             id: 2,
-            url: 'https://theme.hstatic.net/1000237375/1000756917/14/slider_item_2_image.jpg?v=1840',
+            // url: 'https://theme.hstatic.net/1000237375/1000756917/14/slider_item_2_image.jpg?v=1840',
+            url: banner2,
             title: 'Ưu đãi đặc biệt',
             subtitle: 'Giảm giá lên đến 50%',
         },
         {
             id: 3,
-            url: 'https://theme.hstatic.net/1000237375/1000756917/14/slider_item_4_image.jpg?v=1840',
+            // url: 'https://theme.hstatic.net/1000237375/1000756917/14/slider_item_4_image.jpg?v=1840',
+            url: banner3,
             title: 'Phong cách độc đáo',
             subtitle: 'Tạo dấu ấn riêng của bạn',
         },

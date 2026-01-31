@@ -251,7 +251,7 @@ function CartUser() {
                                         block
                                         className="h-12 text-base font-semibold bg-gradient-to-r from-red-500 to-orange-400 hover:from-orange-500 hover:to-red-500 border-0 rounded-lg shadow-lg"
                                     >
-                                        Mua hàng
+                                        Đặt hàng
                                     </Button>
                                 </Link>
 
